@@ -331,6 +331,31 @@ const flirtyPatterns = [
   { en: "Act like you have a crush on someone of the same gender sitting nearby." },
 ];
 
+// Real content for the Office & Coworkers pack (icon_key 'office'). English
+// only — same fallback reasoning as hollywoodPatterns/flirtyPatterns above.
+const officePatterns = [
+  { en: "Rub your temple slightly before answering, like you have a headache from meetings." },
+  { en: "Glance sideways at an imaginary colleague before responding, like seeking approval." },
+  { en: "Tap two fingers on the table in a slow, steady rhythm the whole time." },
+  { en: "Straighten your posture noticeably every time you're asked something." },
+  { en: "Give a small, tight smile before every answer, like you're being diplomatic." },
+  { en: "Slowly roll your shoulders back before responding, like stress relief." },
+  { en: "Lean slightly toward whoever asked, like you're being extra attentive." },
+  { en: "Clasp your hands together on the table before each answer." },
+  { en: "Pause and look upward briefly before answering, like recalling a calendar." },
+  { en: "Rub your hands together lightly before speaking, like warming up to pitch something." },
+  { en: "Cross and uncross your arms between each answer." },
+  { en: "Nod slightly more than necessary while listening to the question." },
+  { en: "Adjust your sleeve or cuff briefly before responding." },
+  { en: "Sit slightly forward on the edge of your seat the whole time." },
+  { en: "Give a small exhale through your nose before each answer, like suppressing a sigh." },
+  { en: "Touch your collarbone lightly before speaking." },
+  { en: "Keep one hand resting flat on the table the entire time, unmoving." },
+  { en: "Slightly tilt your head to the side whenever you're thinking." },
+  { en: "Press your lips together briefly before answering, like holding something back." },
+  { en: "Straighten an invisible stack of papers in front of you before each response." },
+];
+
 const placeholderTemplates = {
   en: (pack, n) => `[Placeholder] ${pack} pattern #${n} — unlock to reveal.`,
   el: (pack, n) => `[Placeholder] μοτίβο ${pack} #${n} — ξεκλείδωσε για να το δεις.`,
@@ -341,10 +366,14 @@ const placeholderTemplates = {
   de: (pack, n) => `[Platzhalter] ${pack}-Muster Nr. ${n} — freischalten, um es zu enthüllen.`,
 };
 
-// Movies & Celebrities and Flirty & Cheeky are deliberately not in this
-// list — they have real content (hollywoodPatterns/flirtyPatterns above)
-// now, not generated placeholder text.
-const premiumPacks = [{ dbName: "Office & Coworkers Pack", label: "Office & Coworkers" }];
+// Movies & Celebrities, Flirty & Cheeky, and Office & Coworkers are
+// deliberately not in this list — they have real content
+// (hollywoodPatterns/flirtyPatterns/officePatterns above) now, not
+// generated placeholder text. Nothing is left to generate placeholders
+// for at the moment; kept as an array (rather than deleted outright) since
+// premiumRows() below is still the right place to seed the next premium
+// pack's placeholder rows before it has real content.
+const premiumPacks = [];
 
 function jsonbLiteral(obj) {
   // Postgres jsonb literal via a single-quoted string; escape embedded
@@ -379,6 +408,12 @@ function flirtyRows() {
     .join(",\n");
 }
 
+function officeRows() {
+  return officePatterns
+    .map((p) => `  (${jsonbLiteral(p)}, ${packIdSubquery("Office & Coworkers Pack")}, false)`)
+    .join(",\n");
+}
+
 function premiumRows() {
   const lines = [];
   for (const pack of premiumPacks) {
@@ -409,12 +444,10 @@ const sql = `-- ================================================================
 -- one row instead of one row per language.
 --
 -- Free Starter Pack (30 patterns) ships to every room out of the box.
--- Movies & Celebrities (20 patterns) and Flirty & Cheeky (20 patterns,
--- renamed from "Spicy Adult Pack") are real content. Office & Coworkers
--- below is still PLACEHOLDER content — enough rows to demo the "browse
--- packs" screen and prove the is_free/has_pack_access gate works end to
--- end. Swap/expand this text whenever real premium content is written; it
--- has no bearing on payments, which are handled by
+-- Movies & Celebrities (20 patterns), Flirty & Cheeky (20 patterns,
+-- renamed from "Spicy Adult Pack"), and Office & Coworkers (20 patterns)
+-- are all real content now. Swap/expand this text whenever more premium
+-- content is written; it has no bearing on payments, which are handled by
 -- subscription/pack-purchase state in \`public.users\` /
 -- \`public.pack_purchases\` (see schema.sql and src/app/premium/page.tsx).
 -- =============================================================================
@@ -436,7 +469,12 @@ insert into public.patterns (text_i18n, pack_id, is_free) values
 ${flirtyRows()};
 
 insert into public.patterns (text_i18n, pack_id, is_free) values
-${premiumRows()};
+${officeRows()};
 `;
+
+// premiumRows()/premiumPacks are unused for now (every current pack has
+// real content) but kept as the ready-made place to seed placeholder rows
+// for the next premium pack, same as Office & Coworkers used to be here.
+void premiumRows;
 
 process.stdout.write(sql);
