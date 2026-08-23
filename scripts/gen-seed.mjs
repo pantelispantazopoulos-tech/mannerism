@@ -1,0 +1,442 @@
+// One-off generator for supabase/seed.sql. Not part of the app build —
+// run with `node scripts/gen-seed.mjs > supabase/seed.sql` whenever the
+// translated pattern content changes, rather than hand-editing 200+ lines
+// of near-duplicate SQL.
+
+const starterPatterns = [
+  {
+    en: "Touch your ear every time before you answer a question.",
+    el: "Άγγιξε το αυτί σου κάθε φορά πριν απαντήσεις σε μια ερώτηση.",
+    fr: "Touche-toi l'oreille à chaque fois avant de répondre à une question.",
+    it: "Toccati l'orecchio ogni volta prima di rispondere a una domanda.",
+    es: "Tócate la oreja cada vez antes de responder una pregunta.",
+    ru: "Каждый раз перед ответом на вопрос трогай себя за ухо.",
+    de: "Berühre dir jedes Mal das Ohr, bevor du eine Frage beantwortest.",
+  },
+  {
+    en: "Answer every question as if you are five years old.",
+    el: "Απάντα σε κάθε ερώτηση σαν να είσαι πέντε χρονών.",
+    fr: "Réponds à chaque question comme si tu avais cinq ans.",
+    it: "Rispondi a ogni domanda come se avessi cinque anni.",
+    es: "Responde a cada pregunta como si tuvieras cinco años.",
+    ru: "Отвечай на каждый вопрос так, будто тебе пять лет.",
+    de: "Beantworte jede Frage, als wärst du fünf Jahre alt.",
+  },
+  {
+    en: "Copy the mannerism of the person to your left before answering.",
+    el: "Αντέγραψε τη συνήθεια του ατόμου στα αριστερά σου πριν απαντήσεις.",
+    fr: "Copie le tic de la personne à ta gauche avant de répondre.",
+    it: "Copia il tic della persona alla tua sinistra prima di rispondere.",
+    es: "Copia el gesto de la persona a tu izquierda antes de responder.",
+    ru: "Перед ответом копируй жест человека слева от тебя.",
+    de: "Kopiere die Angewohnheit der Person zu deiner Linken, bevor du antwortest.",
+  },
+  {
+    en: "End every answer with a question of your own.",
+    el: "Τελείωνε κάθε απάντηση με μια δική σου ερώτηση.",
+    fr: "Termine chaque réponse par une question de ton cru.",
+    it: "Termina ogni risposta con una domanda tua.",
+    es: "Termina cada respuesta con una pregunta propia.",
+    ru: "Заканчивай каждый ответ своим встречным вопросом.",
+    de: "Beende jede Antwort mit einer eigenen Gegenfrage.",
+  },
+  {
+    en: "Speak in the third person about yourself.",
+    el: "Μίλα για τον εαυτό σου σε τρίτο πρόσωπο.",
+    fr: "Parle de toi à la troisième personne.",
+    it: "Parla di te stesso in terza persona.",
+    es: "Habla de ti mismo en tercera persona.",
+    ru: "Говори о себе в третьем лице.",
+    de: "Sprich in der dritten Person über dich selbst.",
+  },
+  {
+    en: "Pause and count to three (silently) before every answer.",
+    el: "Κάνε μια παύση και μέτρα ως το τρία (σιωπηλά) πριν από κάθε απάντηση.",
+    fr: "Fais une pause et compte jusqu'à trois (en silence) avant chaque réponse.",
+    it: "Fai una pausa e conta fino a tre (in silenzio) prima di ogni risposta.",
+    es: "Haz una pausa y cuenta hasta tres (en silencio) antes de cada respuesta.",
+    ru: "Перед каждым ответом делай паузу и (про себя) считай до трёх.",
+    de: "Mach eine Pause und zähle (leise) bis drei, bevor du antwortest.",
+  },
+  {
+    en: "Answer as though you are extremely offended by the question.",
+    el: "Απάντα σαν να έχεις προσβληθεί πολύ από την ερώτηση.",
+    fr: "Réponds comme si tu étais extrêmement vexé(e) par la question.",
+    it: "Rispondi come se fossi estremamente offeso dalla domanda.",
+    es: "Responde como si estuvieras sumamente ofendido por la pregunta.",
+    ru: "Отвечай так, будто вопрос тебя крайне оскорбил.",
+    de: "Antworte, als wärst du von der Frage zutiefst beleidigt.",
+  },
+  {
+    en: "Cross and uncross your arms before each answer.",
+    el: "Σταύρωνε και ξεσταύρωνε τα χέρια σου πριν από κάθε απάντηση.",
+    fr: "Croise et décroise les bras avant chaque réponse.",
+    it: "Incrocia e scrocia le braccia prima di ogni risposta.",
+    es: "Cruza y descruza los brazos antes de cada respuesta.",
+    ru: "Перед каждым ответом скрещивай и расскрещивай руки.",
+    de: "Verschränke und entschränke die Arme vor jeder Antwort.",
+  },
+  {
+    en: "Compliment the Guesser before every answer.",
+    el: "Κάνε ένα κομπλιμέντο σε αυτόν που μαντεύει πριν από κάθε απάντηση.",
+    fr: "Fais un compliment à celui ou celle qui devine avant chaque réponse.",
+    it: "Fai un complimento a chi indovina prima di ogni risposta.",
+    es: "Haz un cumplido a quien adivina antes de cada respuesta.",
+    ru: "Перед каждым ответом делай комплимент угадывающему.",
+    de: "Mach dem Rater vor jeder Antwort ein Kompliment.",
+  },
+  {
+    en: "Answer every question with another question.",
+    el: "Απάντα σε κάθε ερώτηση με άλλη ερώτηση.",
+    fr: "Réponds à chaque question par une autre question.",
+    it: "Rispondi a ogni domanda con un'altra domanda.",
+    es: "Responde a cada pregunta con otra pregunta.",
+    ru: "Отвечай на каждый вопрос ещё одним вопросом.",
+    de: "Beantworte jede Frage mit einer weiteren Frage.",
+  },
+  {
+    en: "Lean in close like you are sharing a secret for every answer.",
+    el: "Έλα κοντά σαν να μοιράζεσαι ένα μυστικό σε κάθε απάντηση.",
+    fr: "Penche-toi comme si tu confiais un secret à chaque réponse.",
+    it: "Sporgiti come se stessi condividendo un segreto a ogni risposta.",
+    es: "Inclínate como si estuvieras compartiendo un secreto en cada respuesta.",
+    ru: "Наклоняйся вперёд, будто делишься секретом, перед каждым ответом.",
+    de: "Beuge dich vor, als würdest du bei jeder Antwort ein Geheimnis verraten.",
+  },
+  {
+    en: "Tap the table twice before you speak.",
+    el: "Χτύπα δύο φορές το τραπέζι πριν μιλήσεις.",
+    fr: "Tape deux fois sur la table avant de parler.",
+    it: "Batti due volte sul tavolo prima di parlare.",
+    es: "Golpea la mesa dos veces antes de hablar.",
+    ru: "Дважды постучи по столу, прежде чем заговорить.",
+    de: "Klopfe zweimal auf den Tisch, bevor du sprichst.",
+  },
+  {
+    en: "Answer as if you are extremely bored by the whole conversation.",
+    el: "Απάντα σαν να βαριέσαι τρομερά όλη τη συζήτηση.",
+    fr: "Réponds comme si toute cette conversation t'ennuyait profondément.",
+    it: "Rispondi come se fossi estremamente annoiato da tutta la conversazione.",
+    es: "Responde como si toda la conversación te aburriera muchísimo.",
+    ru: "Отвечай так, будто тебе смертельно скучно от всего разговора.",
+    de: "Antworte, als würde dich das ganze Gespräch zutiefst langweilen.",
+  },
+  {
+    en: "Refer to the Guesser by the wrong name every time.",
+    el: "Αποκάλεσε αυτόν που μαντεύει με λάθος όνομα κάθε φορά.",
+    fr: "Appelle la personne qui devine par le mauvais prénom à chaque fois.",
+    it: "Chiama chi indovina con il nome sbagliato ogni volta.",
+    es: "Llama a quien adivina por el nombre equivocado cada vez.",
+    ru: "Каждый раз называй угадывающего не тем именем.",
+    de: "Nenne den Rater jedes Mal beim falschen Namen.",
+  },
+  {
+    en: "Answer everything like you are a game show host.",
+    el: "Απάντα σε όλα σαν παρουσιαστής τηλεπαιχνιδιού.",
+    fr: "Réponds à tout comme un animateur de jeu télévisé.",
+    it: "Rispondi a tutto come un presentatore di un game show.",
+    es: "Responde a todo como un presentador de concursos de televisión.",
+    ru: "Отвечай на всё, как ведущий телевизионного шоу.",
+    de: "Beantworte alles wie ein Gameshow-Moderator.",
+  },
+  {
+    en: "Glance at your wrist like you are checking a watch before answering.",
+    el: "Κοίτα τον καρπό σου σαν να ελέγχεις την ώρα πριν απαντήσεις.",
+    fr: "Regarde ton poignet comme si tu vérifiais l'heure avant de répondre.",
+    it: "Guarda il polso come se controllassi l'ora prima di rispondere.",
+    es: "Mira tu muñeca como si estuvieras comprobando la hora antes de responder.",
+    ru: "Перед ответом посмотри на запястье, будто проверяешь время.",
+    de: "Schau auf dein Handgelenk, als würdest du die Uhrzeit prüfen, bevor du antwortest.",
+  },
+  {
+    en: "Answer as if you just woke up from a nap.",
+    el: "Απάντα σαν να μόλις ξύπνησες από έναν υπνάκο.",
+    fr: "Réponds comme si tu venais tout juste de te réveiller d'une sieste.",
+    it: "Rispondi come se ti fossi appena svegliato da un pisolino.",
+    es: "Responde como si te acabaras de despertar de una siesta.",
+    ru: "Отвечай так, будто только что проснулся после дневного сна.",
+    de: "Antworte, als wärst du gerade erst aus einem Nickerchen aufgewacht.",
+  },
+  {
+    en: "Clear your throat before every single answer.",
+    el: "Καθάρισε το λαιμό σου πριν από κάθε απάντηση.",
+    fr: "Éclaircis-toi la gorge avant chaque réponse.",
+    it: "Schiarisciti la voce prima di ogni singola risposta.",
+    es: "Aclárate la garganta antes de cada respuesta.",
+    ru: "Прочищай горло перед каждым ответом.",
+    de: "Räuspere dich vor jeder einzelnen Antwort.",
+  },
+  {
+    en: "Answer every question with overly dramatic sighs.",
+    el: "Απάντα σε κάθε ερώτηση με υπερβολικά δραματικούς αναστεναγμούς.",
+    fr: "Réponds à chaque question avec des soupirs très théâtraux.",
+    it: "Rispondi a ogni domanda con sospiri estremamente drammatici.",
+    es: "Responde a cada pregunta con suspiros muy dramáticos.",
+    ru: "Отвечай на каждый вопрос с преувеличенно драматичными вздохами.",
+    de: "Beantworte jede Frage mit übertrieben dramatischem Seufzen.",
+  },
+  {
+    en: "Point at the ceiling briefly before answering.",
+    el: "Δείξε σύντομα το ταβάνι πριν απαντήσεις.",
+    fr: "Pointe brièvement le plafond avant de répondre.",
+    it: "Indica brevemente il soffitto prima di rispondere.",
+    es: "Señala brevemente el techo antes de responder.",
+    ru: "Перед ответом ненадолго укажи пальцем в потолок.",
+    de: "Zeige kurz zur Decke, bevor du antwortest.",
+  },
+  {
+    en: "Answer as though you are a news anchor delivering breaking news.",
+    el: "Απάντα σαν παρουσιαστής ειδήσεων που ανακοινώνει έκτακτο δελτίο.",
+    fr: "Réponds comme un présentateur du journal annonçant une information de dernière minute.",
+    it: "Rispondi come un anchorman che annuncia una notizia dell'ultima ora.",
+    es: "Responde como un presentador de noticias anunciando una noticia de última hora.",
+    ru: "Отвечай как диктор новостей, объявляющий срочную новость.",
+    de: "Antworte wie ein Nachrichtensprecher, der Eilmeldungen verkündet.",
+  },
+  {
+    en: "Fix your hair or collar before every answer.",
+    el: "Φτιάξε τα μαλλιά σου ή τον γιακά σου πριν από κάθε απάντηση.",
+    fr: "Arrange tes cheveux ou ton col avant chaque réponse.",
+    it: "Sistemati i capelli o il colletto prima di ogni risposta.",
+    es: "Arréglate el pelo o el cuello antes de cada respuesta.",
+    ru: "Поправляй волосы или воротник перед каждым ответом.",
+    de: "Richte deine Haare oder deinen Kragen vor jeder Antwort.",
+  },
+  {
+    en: "Answer every question as if it is the best question you've ever heard.",
+    el: "Απάντα σε κάθε ερώτηση σαν να είναι η καλύτερη ερώτηση που έχεις ακούσει ποτέ.",
+    fr: "Réponds à chaque question comme si c'était la meilleure question jamais posée.",
+    it: "Rispondi a ogni domanda come se fosse la domanda più bella che tu abbia mai sentito.",
+    es: "Responde a cada pregunta como si fuera la mejor pregunta que has escuchado en tu vida.",
+    ru: "Отвечай на каждый вопрос так, будто это лучший вопрос, который ты когда-либо слышал.",
+    de: "Beantworte jede Frage, als wäre es die beste Frage, die du je gehört hast.",
+  },
+  {
+    en: "Whisper the first word of every answer.",
+    el: "Ψιθύρισε την πρώτη λέξη κάθε απάντησης.",
+    fr: "Chuchote le premier mot de chaque réponse.",
+    it: "Sussurra la prima parola di ogni risposta.",
+    es: "Susurra la primera palabra de cada respuesta.",
+    ru: "Шёпотом произноси первое слово каждого ответа.",
+    de: "Flüstere das erste Wort jeder Antwort.",
+  },
+  {
+    en: "Answer as if you are trying to sell the Guesser something.",
+    el: "Απάντα σαν να προσπαθείς να πουλήσεις κάτι σε αυτόν που μαντεύει.",
+    fr: "Réponds comme si tu essayais de vendre quelque chose à celui ou celle qui devine.",
+    it: "Rispondi come se stessi cercando di vendere qualcosa a chi indovina.",
+    es: "Responde como si intentaras venderle algo a quien adivina.",
+    ru: "Отвечай так, будто пытаешься что-то продать угадывающему.",
+    de: "Antworte, als würdest du versuchen, dem Rater etwas zu verkaufen.",
+  },
+  {
+    en: "Nod slowly three times before you start answering.",
+    el: "Κούνησε το κεφάλι σου αργά τρεις φορές πριν αρχίσεις να απαντάς.",
+    fr: "Hoche la tête lentement trois fois avant de commencer à répondre.",
+    it: "Annuisci lentamente tre volte prima di iniziare a rispondere.",
+    es: "Asiente lentamente tres veces antes de empezar a responder.",
+    ru: "Медленно кивни три раза, прежде чем начать отвечать.",
+    de: "Nicke langsam dreimal, bevor du zu antworten beginnst.",
+  },
+  {
+    en: "Answer every question like you are being interviewed for a documentary.",
+    el: "Απάντα σε κάθε ερώτηση σαν να σε συνεντεύξιαζαν για ντοκιμαντέρ.",
+    fr: "Réponds à chaque question comme si tu étais interviewé(e) pour un documentaire.",
+    it: "Rispondi a ogni domanda come se fossi intervistato per un documentario.",
+    es: "Responde a cada pregunta como si te estuvieran entrevistando para un documental.",
+    ru: "Отвечай на каждый вопрос так, будто тебя интервьюируют для документального фильма.",
+    de: "Beantworte jede Frage, als würdest du für eine Dokumentation interviewt.",
+  },
+  {
+    en: "Snap your fingers before you answer, like you just remembered something.",
+    el: "Τρίξε τα δάχτυλά σου πριν απαντήσεις, σαν να μόλις θυμήθηκες κάτι.",
+    fr: "Claque des doigts avant de répondre, comme si tu venais de te souvenir de quelque chose.",
+    it: "Schiocca le dita prima di rispondere, come se ti fossi appena ricordato qualcosa.",
+    es: "Chasquea los dedos antes de responder, como si acabaras de recordar algo.",
+    ru: "Щёлкни пальцами перед ответом, будто только что что-то вспомнил.",
+    de: "Schnippe mit den Fingern, bevor du antwortest, als hättest du dich gerade an etwas erinnert.",
+  },
+  {
+    en: "Answer as if you are mildly suspicious of the Guesser.",
+    el: "Απάντα σαν να είσαι ελαφρώς καχύποπτος απέναντι σε αυτόν που μαντεύει.",
+    fr: "Réponds comme si tu étais légèrement méfiant(e) envers celui ou celle qui devine.",
+    it: "Rispondi come se fossi leggermente sospettoso nei confronti di chi indovina.",
+    es: "Responde como si sospecharas un poco de quien adivina.",
+    ru: "Отвечай так, будто немного подозреваешь угадывающего.",
+    de: "Antworte, als wärst du dem Rater gegenüber leicht misstrauisch.",
+  },
+  {
+    en: 'End every answer by saying "...if that makes sense."',
+    el: "Τελείωνε κάθε απάντηση λέγοντας: «...αν αυτό βγάζει νόημα».",
+    fr: "Termine chaque réponse en disant : « ... si ça a du sens. »",
+    it: 'Termina ogni risposta dicendo: "...se ha senso."',
+    es: 'Termina cada respuesta diciendo: "...si eso tiene sentido."',
+    ru: "Заканчивай каждый ответ словами: «...если это имеет смысл».",
+    de: "Beende jede Antwort mit den Worten: „...falls das Sinn ergibt.“",
+  },
+];
+
+// Real content for the Movies & Celebrities pack (icon_key 'hollywood').
+// English only — the view's coalesce(text_i18n ->> room_language, ->> 'en',
+// ...) already falls back to English for any pattern missing a
+// translation, so a partially-translated text_i18n blob is fully
+// supported, not a bug. Translate into the other six languages later the
+// same way the Starter Pack patterns were (see starterPatterns above).
+const hollywoodPatterns = [
+  { en: "Deliver every answer like you're in a slow-motion action shot." },
+  { en: "Flip imaginary sunglasses on before answering." },
+  { en: "Pause dramatically before every sentence, like a movie trailer voice." },
+  { en: "Answer as if a camera crew is filming your best angle." },
+  { en: "Do a subtle hair flip before speaking, like a red carpet moment." },
+  { en: "Speak like you're delivering an Oscar acceptance speech." },
+  { en: "Glance off camera like you're waiting for direction." },
+  { en: "Answer every question like it's a plot twist reveal." },
+  { en: "Do a small villain smirk after every answer." },
+  { en: "Act like you're the secret agent in the room, subtly scanning for exits." },
+  { en: "Answer questions like you're a movie detective solving a case." },
+  { en: "Do a dramatic sigh before every answer, like a heartbroken lead." },
+  { en: "Speak as if there's a dramatic musical swell behind you." },
+  { en: "Act mildly annoyed, like a diva interrupted mid-interview." },
+  { en: "Answer like you're in a black-and-white noir film." },
+  { en: 'Do a subtle "and... action" hand gesture before speaking.' },
+  { en: "Treat every answer like your character's big monologue moment." },
+  { en: 'Act as if you just heard "cut!" and are slightly out of character.' },
+  { en: "Answer like a superhero giving a serious warning." },
+  { en: "End every answer with a subtle wink, like a movie hero walking away." },
+];
+
+// Real content for the Flirty & Cheeky pack (icon_key 'adult', renamed from
+// "Spicy Adult Pack"). English only — same fallback reasoning as
+// hollywoodPatterns above.
+const flirtyPatterns = [
+  { en: "Compliment something about the person you're answering before each answer." },
+  { en: "Bite your lip slightly before speaking." },
+  { en: "Show some skin while you answer." },
+  { en: "Lightly touch the arm of whoever is sitting closest to you." },
+  { en: "Wink at someone new after every answer." },
+  { en: "Lean in slightly closer than normal when answering." },
+  { en: "Fan yourself dramatically like they said something hot." },
+  { en: "Answer every question like you're flirting with the asker." },
+  { en: "Gently tap the shoulder of the person to your left before speaking." },
+  { en: "Speak in a slightly lower, teasing tone than usual." },
+  { en: "Play with your collar or sleeve while thinking of an answer." },
+  { en: "Give a slow, playful smile before every answer." },
+  { en: "Answer as if you're trying to impress a crush." },
+  { en: "Brush your hand against the table dramatically before speaking." },
+  { en: "Twirl an imaginary mustache like you're plotting something smooth." },
+  { en: "Answer every question with a hint of mock jealousy." },
+  { en: "The person to your left must flirt with someone else in the room before your next answer." },
+  { en: "Bump shoulders lightly with your neighbor before speaking." },
+  { en: "Speak as if you're trying to make someone jealous." },
+  { en: "Act like you have a crush on someone of the same gender sitting nearby." },
+];
+
+const placeholderTemplates = {
+  en: (pack, n) => `[Placeholder] ${pack} pattern #${n} — unlock to reveal.`,
+  el: (pack, n) => `[Placeholder] μοτίβο ${pack} #${n} — ξεκλείδωσε για να το δεις.`,
+  fr: (pack, n) => `[Espace réservé] Motif ${pack} nº${n} — débloquez pour révéler.`,
+  it: (pack, n) => `[Segnaposto] Pattern ${pack} n°${n} — sblocca per rivelare.`,
+  es: (pack, n) => `[Marcador de posición] Patrón ${pack} n.º${n} — desbloquea para revelar.`,
+  ru: (pack, n) => `[Заглушка] Паттерн ${pack} №${n} — разблокируй, чтобы увидеть.`,
+  de: (pack, n) => `[Platzhalter] ${pack}-Muster Nr. ${n} — freischalten, um es zu enthüllen.`,
+};
+
+// Movies & Celebrities and Flirty & Cheeky are deliberately not in this
+// list — they have real content (hollywoodPatterns/flirtyPatterns above)
+// now, not generated placeholder text.
+const premiumPacks = [{ dbName: "Office & Coworkers Pack", label: "Office & Coworkers" }];
+
+function jsonbLiteral(obj) {
+  // Postgres jsonb literal via a single-quoted string; escape embedded
+  // single quotes by doubling them (standard SQL string escaping).
+  const json = JSON.stringify(obj);
+  return `'${json.replace(/'/g, "''")}'::jsonb`;
+}
+
+// Packs are referenced by id (see supabase/schema.sql's `packs` table),
+// not by name string, so every row resolves its pack via a subquery on the
+// pack's name — trivial cost for a one-off seed script, and avoids this
+// generator needing to know pack ids (which differ per database).
+function packIdSubquery(name) {
+  return `(select id from public.packs where name = '${name}')`;
+}
+
+function starterRows() {
+  return starterPatterns
+    .map((p) => `  (${jsonbLiteral(p)}, ${packIdSubquery("Starter Pack")}, true)`)
+    .join(",\n");
+}
+
+function hollywoodRows() {
+  return hollywoodPatterns
+    .map((p) => `  (${jsonbLiteral(p)}, ${packIdSubquery("Movies & Celebrities Pack")}, false)`)
+    .join(",\n");
+}
+
+function flirtyRows() {
+  return flirtyPatterns
+    .map((p) => `  (${jsonbLiteral(p)}, ${packIdSubquery("Flirty & Cheeky")}, false)`)
+    .join(",\n");
+}
+
+function premiumRows() {
+  const lines = [];
+  for (const pack of premiumPacks) {
+    for (let n = 1; n <= 5; n++) {
+      const text = {};
+      for (const lang of Object.keys(placeholderTemplates)) {
+        text[lang] = placeholderTemplates[lang](pack.label, n);
+      }
+      lines.push(`  (${jsonbLiteral(text)}, ${packIdSubquery(pack.dbName)}, false)`);
+    }
+  }
+  return lines.join(",\n");
+}
+
+const sql = `-- =============================================================================
+-- Mannerism — pattern seed data
+-- =============================================================================
+-- Run this after schema.sql. It's safe to re-run: it deletes existing rows
+-- for these exact pack names first, then re-inserts.
+--
+-- GENERATED FILE: produced by scripts/gen-seed.mjs from the translation
+-- data there. Edit that file and regenerate rather than hand-editing the
+-- INSERT statements below.
+--
+-- Each pattern is one row with a \`text_i18n\` jsonb column holding all
+-- seven supported languages (en, el, fr, it, es, ru, de) — see the column
+-- comment on \`public.patterns\` in schema.sql for why translations live on
+-- one row instead of one row per language.
+--
+-- Free Starter Pack (30 patterns) ships to every room out of the box.
+-- Movies & Celebrities (20 patterns) and Flirty & Cheeky (20 patterns,
+-- renamed from "Spicy Adult Pack") are real content. Office & Coworkers
+-- below is still PLACEHOLDER content — enough rows to demo the "browse
+-- packs" screen and prove the is_free/has_pack_access gate works end to
+-- end. Swap/expand this text whenever real premium content is written; it
+-- has no bearing on payments, which are handled by
+-- subscription/pack-purchase state in \`public.users\` /
+-- \`public.pack_purchases\` (see schema.sql and src/app/premium/page.tsx).
+-- =============================================================================
+
+delete from public.patterns
+using public.packs
+where patterns.pack_id = packs.id
+  and packs.name in (
+    'Starter Pack', 'Flirty & Cheeky', 'Movies & Celebrities Pack', 'Office & Coworkers Pack'
+  );
+
+insert into public.patterns (text_i18n, pack_id, is_free) values
+${starterRows()};
+
+insert into public.patterns (text_i18n, pack_id, is_free) values
+${hollywoodRows()};
+
+insert into public.patterns (text_i18n, pack_id, is_free) values
+${flirtyRows()};
+
+insert into public.patterns (text_i18n, pack_id, is_free) values
+${premiumRows()};
+`;
+
+process.stdout.write(sql);

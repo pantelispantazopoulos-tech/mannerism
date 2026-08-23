@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =============================================================================
+   Theme tokens — "secret note passed at the table."
+   Four brand colors, full stop, plus standard grayscale for text/borders.
+   Exposed as CSS variables (for anything that needs a raw value, e.g. inline
+   SVG or the confetti particles) and mirrored in tailwind.config.ts so every
+   component reaches for the same palette instead of inventing new hues.
+   ============================================================================= */
+:root {
+  --color-ink: #1b1830;
+  --color-parchment: #f2e9d8;
+  --color-coral: #ff5d5d;
+  --color-sage: #8fa998;
+
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+
+  /* Brand background pattern (public/patterns/mannerism-pattern.svg) — the
+     single knob to turn if it ever competes with foreground content. Kept
+     faint on purpose: it's texture for the ink areas behind/around cards,
+     not something a player should consciously notice. */
+  --pattern-opacity: 0.18;
+  /* Slightly smaller than the tile's native 320px on small screens so it
+     doesn't read as sparse on a phone; grows to the native size once
+     there's room for it (see the media query below). */
+  --pattern-size: 220px;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --pattern-size: 320px;
+  }
+}
+
+html {
+  background-color: var(--color-ink);
+}
+
+body {
+  background-color: var(--color-ink);
+  color: var(--color-parchment);
+  font-family: var(--font-body);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* The seamless pattern tile, applied once here (rendered as a real element
+   in RootLayout, before {children} — see layout.tsx) so no individual
+   screen has to reach for it. A separate layer from body's own background
+   so --pattern-opacity only fades the pattern, never the ink color or any
+   content. `position: fixed` (rather than `background-attachment: fixed`)
+   is deliberate: this app is mobile-first, and background-attachment:
+   fixed is well known to be unreliable on iOS Safari, which would defeat
+   the "doesn't shift on scroll" requirement on exactly the devices this
+   game is mostly played on.
+   z-index is 0, not a negative value, with the real content explicitly
+   raised to z-index: 1 in layout.tsx — deliberately not "pattern behind at
+   -1, content at the default auto" the more obvious way round, because
+   fixed-position elements with a negative z-index render inconsistently
+   across environments. Explicit non-negative stacking on both layers is
+   the reliable version of the same effect. Opaque, light-colored surfaces
+   (parchment cards, buttons, etc.) sit in the content layer above this and
+   simply paint over it — nothing extra needed to keep the pattern from
+   showing through card backgrounds or under body text. */
+.brand-pattern-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("/patterns/mannerism-pattern.svg");
+  background-repeat: repeat;
+  background-size: var(--pattern-size) var(--pattern-size);
+  opacity: var(--pattern-opacity);
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Visible keyboard focus everywhere, regardless of what a component does
+   with the default outline — this is the one focus style the whole app
+   uses, so nothing needs to redeclare it. */
+:focus-visible {
+  outline: 3px solid var(--color-coral);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Respect the OS-level motion preference: every animation/transition in the
+   shared theme layer (tailwind.config.ts keyframes, plus the ones below)
+   collapses to an instant state change instead of playing. Components that
+   drive animation from JS (confetti, the digit flip, the guesser rotation
+   sweep) additionally check this via useReducedMotion() so they skip
+   mounting the effect entirely rather than relying on CSS alone. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

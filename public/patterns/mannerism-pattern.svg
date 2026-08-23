@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="320">
+<rect x="0" y="0" width="320" height="320" fill="#1B1830"/>
+<path d="M50,43 Q54,51 62,55 Q54,59 50,67 Q46,59 38,55 Q46,51 50,43 Z" fill="#F2E9D8"/>
+<path d="M188,45 Q200,35 212,45" fill="none" stroke="#FF5D5D" stroke-width="4" stroke-linecap="round"/>
+<line x1="214" y1="42" x2="221" y2="38" stroke="#FF5D5D" stroke-width="2" stroke-linecap="round"/>
+<line x1="216" y1="47" x2="223" y2="46" stroke="#FF5D5D" stroke-width="2" stroke-linecap="round"/>
+<path d="M255,110 Q270,100 285,110 Q270,120 255,110 Z" fill="#F2E9D8" stroke="#1B1830" stroke-width="1.5"/>
+<circle cx="270" cy="110" r="4" fill="#FF5D5D"/>
+<rect x="65" y="138" width="40" height="26" rx="8" fill="#8FA998"/>
+<path d="M75,164 L68,176 L85,164 Z" fill="#8FA998"/>
+<rect x="215" y="180" width="34" height="24" rx="3" fill="#FF5D5D"/>
+<path d="M215,180 L232,194 L249,180" fill="none" stroke="#1B1830" stroke-width="2"/>
+<path d="M30,222 Q33,227 38,230 Q33,233 30,238 Q27,233 22,230 Q27,227 30,222 Z" fill="#FF5D5D"/>
+<text x="150" y="278" font-family="'Space Grotesk','Inter',sans-serif" font-size="28" font-weight="700" fill="#8FA998" text-anchor="middle">?</text>
+<circle cx="264" cy="280" r="4" fill="#F2E9D8"/>
+<circle cx="276" cy="280" r="4" fill="#F2E9D8"/>
+<circle cx="270" cy="290" r="4" fill="#F2E9D8"/>
+<path d="M150,23 Q153,27 158,30 Q153,33 150,38 Q147,33 142,30 Q147,27 150,23 Z" fill="#F2E9D8" opacity="0.85"/>
+<path d="M18,112 Q21,117 26,120 Q21,123 18,128 Q15,123 10,120 Q15,117 18,112 Z" fill="#FF5D5D" opacity="0.85"/>
+<path d="M300,50 Q303,54 308,57 Q303,60 300,65 Q297,60 292,57 Q297,54 300,50 Z" fill="#F2E9D8" opacity="0.85"/>
+<path d="M100,213 Q103,217 108,220 Q103,223 100,228 Q97,223 92,220 Q97,217 100,213 Z" fill="#8FA998" opacity="0.85"/>
+</svg>
