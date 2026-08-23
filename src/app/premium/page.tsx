@@ -11,6 +11,7 @@ import { useAccount } from "@/lib/supabase/useAccount";
 import { listMyPackPurchases, listPatternCatalog } from "@/lib/game/roomApi";
 import { startPackCheckout } from "@/lib/stripe/checkout";
 import { PackIcon } from "@/components/icons/PackIcons";
+import { useIsNativePlatform } from "@/lib/capacitor/useIsNativePlatform";
 import type { PatternCatalogRow } from "@/lib/supabase/types";
 
 const PACK_BLURBS: Record<string, string> = {
@@ -27,6 +28,7 @@ const PACK_BLURBS: Record<string, string> = {
 function PackBuyButton({ packName, isEmailLinked }: { packName: string; isEmailLinked: boolean }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isNative = useIsNativePlatform();
 
   async function handleBuy() {
     setBusy(true);
@@ -47,7 +49,7 @@ function PackBuyButton({ packName, isEmailLinked }: { packName: string; isEmailL
   return (
     <div className="mt-4">
       <Button fullWidth={false} onClick={handleBuy} disabled={busy}>
-        {busy ? "Starting checkout…" : "$1 — Unlock just this pack"}
+        {busy ? "Starting checkout…" : isNative ? "Continue on mannerism.app" : "$1 — Unlock just this pack"}
       </Button>
       {error && <p className="mt-2 text-xs font-semibold text-coral">{error}</p>}
     </div>

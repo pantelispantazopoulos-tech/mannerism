@@ -91,6 +91,14 @@ export default function HomePage() {
           <Link href="/premium" className="mt-2 text-center text-sm font-bold text-sage">
             Browse pattern packs →
           </Link>
+          <div className="mt-2 flex justify-center gap-4 text-xs font-semibold text-parchment/40">
+            <Link href="/privacy" className="hover:text-parchment/60">
+              Privacy
+            </Link>
+            <Link href="/terms" className="hover:text-parchment/60">
+              Terms
+            </Link>
+          </div>
         </div>
       )}
 
