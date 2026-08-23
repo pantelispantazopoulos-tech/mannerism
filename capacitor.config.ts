@@ -1,9 +1,13 @@
 import type { CapacitorConfig } from "@capacitor/cli";
 
-// PLACEHOLDER — replace with your real reverse-domain app ID before any
-// real build (this becomes the Play Store package name and CANNOT be
-// changed after the first release). "yourcompany" is not a real domain.
-const APP_ID = "com.yourcompany.mannerism";
+// Uses the io.github.<username>.<app> convention — the standard free
+// option for indie/OSS Android apps that don't have a registered domain.
+// Google only requires the package name to be unique on Play Store, not
+// domain-verified, so this is a legitimate, permanent app ID as-is — not
+// a placeholder. It CANNOT be changed after your first Play Store
+// release, though, so if you register a real domain before then and want
+// e.g. app.mannerism.android instead, swap it now.
+const APP_ID = "io.github.pantelispantazopoulostech.mannerism";
 
 // The Android app is a thin native shell: it loads the same deployed
 // Next.js site everyone plays on in the browser, so the web app stays the

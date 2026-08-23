@@ -1,4 +1,4 @@
-package com.yourcompany.mannerism;
+package io.github.pantelispantazopoulostech.mannerism;
 
 import com.getcapacitor.BridgeActivity;
 
