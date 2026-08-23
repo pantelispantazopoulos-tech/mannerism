@@ -1,5 +1,7 @@
 # Mannerism
 
+[![CI](https://github.com/pantelispantazopoulos-tech/mannerism/actions/workflows/ci.yml/badge.svg)](https://github.com/pantelispantazopoulos-tech/mannerism/actions/workflows/ci.yml)
+
 A live party game inspired by the classic "Psychiatrist" / "Psych Ward" parlor
 game. One player is the Guesser and asks the group questions out loud; every
 other player is secretly given the same mannerism to act out while
