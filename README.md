@@ -256,16 +256,17 @@ screens changed to support this.
 These can't be done from here — they need Android Studio, a Google Play
 Console account, and decisions only you can make.
 
-1. **Pick your real app ID** and replace the `APP_ID` placeholder in
-   `capacitor.config.ts` (currently `com.yourcompany.mannerism`) —
-   reverse-domain format, e.g. `com.yourdomain.mannerism`. This becomes
-   the Play Store package name and **cannot be changed after your first
-   release**, so get it right before you publish.
-2. **Point `DEPLOYED_APP_URL` at your real production domain** once you
-   have one (currently the linked Vercel project's default URL,
-   `https://omniroute-khaki.vercel.app`) — and redeploy the site first;
-   that URL is currently serving a build from before this session's
-   branding work.
+1. ~~Pick your real app ID~~ — done, using the free
+   `io.github.<username>.<app>` convention (no domain purchase needed):
+   `io.github.pantelispantazopoulostech.mannerism`. This is a real,
+   permanent ID as-is, not a placeholder — but if you register a real
+   domain before your first Play Store release, you can still swap it for
+   something like `app.mannerism.android` (it **cannot** change after
+   that first release).
+2. ~~Point `DEPLOYED_APP_URL` at your real production domain~~ — for now
+   this points at the linked Vercel project's URL
+   (`https://omniroute-khaki.vercel.app`), which is deployed and current.
+   Swap it for a real custom domain later if you get one; no urgency.
 3. **Install [Android Studio](https://developer.android.com/studio)** if
    you don't have it — it bundles the Android SDK and an emulator, both
    required to build or run the app.
