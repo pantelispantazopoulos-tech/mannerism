@@ -6,7 +6,7 @@ on:
   pull_request:
 
 jobs:
-  lint-and-typecheck:
+  checks:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -21,3 +21,17 @@ jobs:
       - run: npm run lint
 
       - run: npm run typecheck
+
+      # NEXT_PUBLIC_* vars get baked into the client bundle at build time
+      # (Supabase's client wrapper throws at import time if they're
+      # missing — see src/lib/supabase/client.ts — which would otherwise
+      # crash prerendering of "/"). They're not secrets — NEXT_PUBLIC_
+      # values ship in the browser bundle regardless — so placeholders are
+      # fine here; this step only checks that the app builds, it never
+      # talks to a real Supabase project. The Stripe env vars aren't
+      # needed at build time since those routes are server-rendered on
+      # demand, not prerendered.
+      - run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-anon-key
