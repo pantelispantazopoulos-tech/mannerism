@@ -14,12 +14,10 @@
 -- one row instead of one row per language.
 --
 -- Free Starter Pack (30 patterns) ships to every room out of the box.
--- Movies & Celebrities (20 patterns) and Flirty & Cheeky (20 patterns,
--- renamed from "Spicy Adult Pack") are real content. Office & Coworkers
--- below is still PLACEHOLDER content — enough rows to demo the "browse
--- packs" screen and prove the is_free/has_pack_access gate works end to
--- end. Swap/expand this text whenever real premium content is written; it
--- has no bearing on payments, which are handled by
+-- Movies & Celebrities (20 patterns), Flirty & Cheeky (20 patterns,
+-- renamed from "Spicy Adult Pack"), and Office & Coworkers (20 patterns)
+-- are all real content now. Swap/expand this text whenever more premium
+-- content is written; it has no bearing on payments, which are handled by
 -- subscription/pack-purchase state in `public.users` /
 -- `public.pack_purchases` (see schema.sql and src/app/premium/page.tsx).
 -- =============================================================================
@@ -108,8 +106,23 @@ insert into public.patterns (text_i18n, pack_id, is_free) values
   ('{"en":"Act like you have a crush on someone of the same gender sitting nearby."}'::jsonb, (select id from public.packs where name = 'Flirty & Cheeky'), false);
 
 insert into public.patterns (text_i18n, pack_id, is_free) values
-  ('{"en":"[Placeholder] Office & Coworkers pattern #1 — unlock to reveal.","el":"[Placeholder] μοτίβο Office & Coworkers #1 — ξεκλείδωσε για να το δεις.","fr":"[Espace réservé] Motif Office & Coworkers nº1 — débloquez pour révéler.","it":"[Segnaposto] Pattern Office & Coworkers n°1 — sblocca per rivelare.","es":"[Marcador de posición] Patrón Office & Coworkers n.º1 — desbloquea para revelar.","ru":"[Заглушка] Паттерн Office & Coworkers №1 — разблокируй, чтобы увидеть.","de":"[Platzhalter] Office & Coworkers-Muster Nr. 1 — freischalten, um es zu enthüllen."}'::jsonb, (select id from public.packs where name = 'Office & Coworkers Pack'), false),
-  ('{"en":"[Placeholder] Office & Coworkers pattern #2 — unlock to reveal.","el":"[Placeholder] μοτίβο Office & Coworkers #2 — ξεκλείδωσε για να το δεις.","fr":"[Espace réservé] Motif Office & Coworkers nº2 — débloquez pour révéler.","it":"[Segnaposto] Pattern Office & Coworkers n°2 — sblocca per rivelare.","es":"[Marcador de posición] Patrón Office & Coworkers n.º2 — desbloquea para revelar.","ru":"[Заглушка] Паттерн Office & Coworkers №2 — разблокируй, чтобы увидеть.","de":"[Platzhalter] Office & Coworkers-Muster Nr. 2 — freischalten, um es zu enthüllen."}'::jsonb, (select id from public.packs where name = 'Office & Coworkers Pack'), false),
-  ('{"en":"[Placeholder] Office & Coworkers pattern #3 — unlock to reveal.","el":"[Placeholder] μοτίβο Office & Coworkers #3 — ξεκλείδωσε για να το δεις.","fr":"[Espace réservé] Motif Office & Coworkers nº3 — débloquez pour révéler.","it":"[Segnaposto] Pattern Office & Coworkers n°3 — sblocca per rivelare.","es":"[Marcador de posición] Patrón Office & Coworkers n.º3 — desbloquea para revelar.","ru":"[Заглушка] Паттерн Office & Coworkers №3 — разблокируй, чтобы увидеть.","de":"[Platzhalter] Office & Coworkers-Muster Nr. 3 — freischalten, um es zu enthüllen."}'::jsonb, (select id from public.packs where name = 'Office & Coworkers Pack'), false),
-  ('{"en":"[Placeholder] Office & Coworkers pattern #4 — unlock to reveal.","el":"[Placeholder] μοτίβο Office & Coworkers #4 — ξεκλείδωσε για να το δεις.","fr":"[Espace réservé] Motif Office & Coworkers nº4 — débloquez pour révéler.","it":"[Segnaposto] Pattern Office & Coworkers n°4 — sblocca per rivelare.","es":"[Marcador de posición] Patrón Office & Coworkers n.º4 — desbloquea para revelar.","ru":"[Заглушка] Паттерн Office & Coworkers №4 — разблокируй, чтобы увидеть.","de":"[Platzhalter] Office & Coworkers-Muster Nr. 4 — freischalten, um es zu enthüllen."}'::jsonb, (select id from public.packs where name = 'Office & Coworkers Pack'), false),
-  ('{"en":"[Placeholder] Office & Coworkers pattern #5 — unlock to reveal.","el":"[Placeholder] μοτίβο Office & Coworkers #5 — ξεκλείδωσε για να το δεις.","fr":"[Espace réservé] Motif Office & Coworkers nº5 — débloquez pour révéler.","it":"[Segnaposto] Pattern Office & Coworkers n°5 — sblocca per rivelare.","es":"[Marcador de posición] Patrón Office & Coworkers n.º5 — desbloquea para revelar.","ru":"[Заглушка] Паттерн Office & Coworkers №5 — разблокируй, чтобы увидеть.","de":"[Platzhalter] Office & Coworkers-Muster Nr. 5 — freischalten, um es zu enthüllen."}'::jsonb, (select id from public.packs where name = 'Office & Coworkers Pack'), false);
+  ('{"en":"Rub your temple slightly before answering, like you have a headache from meetings."}'::jsonb, (select id from public.packs where name = 'Office & Coworkers Pack'), false),
+  ('{"en":"Glance sideways at an imaginary colleague before responding, like seeking approval."}'::jsonb, (select id from public.packs where name = 'Office & Coworkers Pack'), false),
+  ('{"en":"Tap two fingers on the table in a slow, steady rhythm the whole time."}'::jsonb, (select id from public.packs where name = 'Office & Coworkers Pack'), false),
+  ('{"en":"Straighten your posture noticeably every time you''re asked something."}'::jsonb, (select id from public.packs where name = 'Office & Coworkers Pack'), false),
+  ('{"en":"Give a small, tight smile before every answer, like you''re being diplomatic."}'::jsonb, (select id from public.packs where name = 'Office & Coworkers Pack'), false),
+  ('{"en":"Slowly roll your shoulders back before responding, like stress relief."}'::jsonb, (select id from public.packs where name = 'Office & Coworkers Pack'), false),
+  ('{"en":"Lean slightly toward whoever asked, like you''re being extra attentive."}'::jsonb, (select id from public.packs where name = 'Office & Coworkers Pack'), false),
+  ('{"en":"Clasp your hands together on the table before each answer."}'::jsonb, (select id from public.packs where name = 'Office & Coworkers Pack'), false),
+  ('{"en":"Pause and look upward briefly before answering, like recalling a calendar."}'::jsonb, (select id from public.packs where name = 'Office & Coworkers Pack'), false),
+  ('{"en":"Rub your hands together lightly before speaking, like warming up to pitch something."}'::jsonb, (select id from public.packs where name = 'Office & Coworkers Pack'), false),
+  ('{"en":"Cross and uncross your arms between each answer."}'::jsonb, (select id from public.packs where name = 'Office & Coworkers Pack'), false),
+  ('{"en":"Nod slightly more than necessary while listening to the question."}'::jsonb, (select id from public.packs where name = 'Office & Coworkers Pack'), false),
+  ('{"en":"Adjust your sleeve or cuff briefly before responding."}'::jsonb, (select id from public.packs where name = 'Office & Coworkers Pack'), false),
+  ('{"en":"Sit slightly forward on the edge of your seat the whole time."}'::jsonb, (select id from public.packs where name = 'Office & Coworkers Pack'), false),
+  ('{"en":"Give a small exhale through your nose before each answer, like suppressing a sigh."}'::jsonb, (select id from public.packs where name = 'Office & Coworkers Pack'), false),
+  ('{"en":"Touch your collarbone lightly before speaking."}'::jsonb, (select id from public.packs where name = 'Office & Coworkers Pack'), false),
+  ('{"en":"Keep one hand resting flat on the table the entire time, unmoving."}'::jsonb, (select id from public.packs where name = 'Office & Coworkers Pack'), false),
+  ('{"en":"Slightly tilt your head to the side whenever you''re thinking."}'::jsonb, (select id from public.packs where name = 'Office & Coworkers Pack'), false),
+  ('{"en":"Press your lips together briefly before answering, like holding something back."}'::jsonb, (select id from public.packs where name = 'Office & Coworkers Pack'), false),
+  ('{"en":"Straighten an invisible stack of papers in front of you before each response."}'::jsonb, (select id from public.packs where name = 'Office & Coworkers Pack'), false);
