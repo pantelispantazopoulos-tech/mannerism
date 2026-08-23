@@ -103,6 +103,17 @@ create table if not exists public.packs (
 -- demo content — unlike supabase/seed.sql (the actual patterns), this
 -- lives in schema.sql so a fresh install always has packs for
 -- supabase/seed.sql's patterns to attach to via pack_id.
+--
+-- ANDROID/PLAY STORE REMINDER: Flirty & Cheeky (below) contains sexual
+-- references/innuendo (see supabase/seed.sql's patterns for this pack) and
+-- already gets a host consent prompt in-app before use (see
+-- confirm_flirty_pack_consent and flirty_consent_confirmed on rooms,
+-- further down this file). Before submitting to Play Console, answer the
+-- content rating questionnaire HONESTLY based on this pack's actual
+-- content — don't undersell it to chase a lower rating. This will likely
+-- land the app at a Teen rating rather than Everyone; that's expected and
+-- fine, but must be declared correctly, not guessed at or left as
+-- whatever the default happens to be.
 insert into public.packs (name, icon_key, is_premium, display_order) values
   ('Starter Pack', 'starter', false, 0),
   ('Flirty & Cheeky', 'adult', true, 1),

@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Inter } from "next/font/google";
+import { CapacitorBackButton } from "@/components/CapacitorBackButton";
+import { OfflineScreen } from "@/components/OfflineScreen";
 import "./globals.css";
 
 // The shared type pairing: a characterful condensed display face for
@@ -52,6 +54,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             pattern pushed to a negative one. */}
         <div className="brand-pattern-bg" aria-hidden="true" />
         <div className="relative z-[1]">{children}</div>
+        {/* Both are no-ops in the regular web app — see their own file
+            comments. Rendered once here, same as the background pattern
+            above, rather than per-screen. */}
+        <CapacitorBackButton />
+        <OfflineScreen />
       </body>
     </html>
   );

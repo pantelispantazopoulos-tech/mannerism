@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<!--
+  Never actually shown. Capacitor requires a local webDir to exist even
+  when server.url is set (see capacitor.config.ts) — this file is only
+  copied into the native shell as a fallback for the brief moment before
+  the WebView loads the real remote app, and if the device has no network
+  connectivity on first launch (see src/components/OfflineScreen.tsx for
+  the in-app offline state, which only appears once the real app has
+  already loaded once).
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mannerism</title>
+    <style>
+      html, body {
+        margin: 0;
+        height: 100%;
+        background: #1b1830;
+      }
+    </style>
+  </head>
+  <body></body>
+</html>

@@ -41,6 +41,10 @@ three premium packs.
 ## Project structure
 
 ```
+capacitor.config.ts — Android app config (see "Android app" below)
+android/             — generated native project (Capacitor)
+assets/              — source images @capacitor/assets generates icons/splash from
+www/                 — placeholder webDir Capacitor requires even in remote-URL mode
 supabase/
   schema.sql   — tables, RLS policies, secure views, RPC functions
   seed.sql     — free Starter Pack (30 patterns) + 3 premium pack stubs
@@ -50,6 +54,7 @@ src/
     room/[code]/page.tsx           — lobby + live round flow
     room/[code]/patterns/page.tsx  — create/save/publish patterns, browse the shared pool
     premium/page.tsx               — pattern pack store, subscription-gated
+    privacy/page.tsx, terms/page.tsx — compliance pages (TODO sections — not final legal copy)
     api/stripe/checkout/route.ts   — creates a Stripe Checkout Session (server-only)
     api/stripe/webhook/route.ts    — syncs subscription state from Stripe (server-only)
   components/              — shared UI (Button, PlayerList, PatternCard, UpgradePrompt, …)
@@ -204,6 +209,102 @@ live mode, swap `STRIPE_SECRET_KEY`/`STRIPE_WEBHOOK_SECRET` for their live
 equivalents in Vercel's production environment variables, and update the
 Supabase Site URL/Redirect URLs to match — nothing else changes.
 
+## Android app (Capacitor)
+
+The Android app is a thin native shell around the same deployed website —
+it loads `server.url` from `capacitor.config.ts` in a WebView, so the
+website stays the single source of truth for game logic, packs, and
+billing. Nothing in `supabase/`, the Stripe routes, or the core game
+screens changed to support this.
+
+**What's wired up:**
+
+- `capacitor.config.ts` — app name, app ID, and `server.url` pointing at
+  the deployed site (see the two placeholders flagged in that file —
+  **you must replace both** before a real build; see the manual steps
+  below).
+- `android/` — the generated native project (Capacitor + `@capacitor/app`
+  + `@capacitor/browser` already wired in).
+- **Icons/splash**: generated from `public/branding/mannerism-logo-*.png`
+  via `@capacitor/assets` — see `assets/` (the source layers) and
+  `scripts/gen-splash.mjs` / `scripts/gen-icon-layers.mjs` (how they were
+  built). Rerun `npx capacitor-assets generate --android` after changing
+  the master logo.
+- **Hardware back button** (`src/components/CapacitorBackButton.tsx`) —
+  navigates the app's own history via `@capacitor/app`'s `backButton`
+  event instead of closing the app or leaving the WebView in a broken
+  state. No-op on the web.
+- **Offline screen** (`src/components/OfflineScreen.tsx`) — a full-screen
+  overlay shown whenever `navigator.onLine` goes false, instead of a
+  frozen/blank WebView. Works on web too (no Capacitor dependency).
+- **Payments never open in the WebView** — every Stripe Checkout redirect
+  (`src/lib/stripe/checkout.ts`) opens the system browser via
+  `@capacitor/browser` when running natively (regular `window.location`
+  redirect on the web, unchanged). Button copy switches to "Continue on
+  mannerism.app" natively so it's clear checkout is leaving the app.
+  There is no Google Play Billing integration — deliberately, since
+  nothing here is an in-app digital good Play's billing rules would
+  require it for.
+- `capacitor.config.ts`'s `server.allowNavigation` is scoped to only the
+  deployed app's own hostname, as a defense-in-depth backstop on top of
+  the above — the WebView has nothing else to navigate to.
+- `/privacy` and `/terms` — structural pages with explicit `TODO` sections
+  for the real legal wording (see below).
+
+### Manual steps (outside of code)
+
+These can't be done from here — they need Android Studio, a Google Play
+Console account, and decisions only you can make.
+
+1. **Pick your real app ID** and replace the `APP_ID` placeholder in
+   `capacitor.config.ts` (currently `com.yourcompany.mannerism`) —
+   reverse-domain format, e.g. `com.yourdomain.mannerism`. This becomes
+   the Play Store package name and **cannot be changed after your first
+   release**, so get it right before you publish.
+2. **Point `DEPLOYED_APP_URL` at your real production domain** once you
+   have one (currently the linked Vercel project's default URL,
+   `https://omniroute-khaki.vercel.app`) — and redeploy the site first;
+   that URL is currently serving a build from before this session's
+   branding work.
+3. **Install [Android Studio](https://developer.android.com/studio)** if
+   you don't have it — it bundles the Android SDK and an emulator, both
+   required to build or run the app.
+4. **Open the generated project**: `npx cap open android`, or open the
+   `android/` folder directly in Android Studio.
+5. **Run a test build on an emulator**: in Android Studio, create a
+   virtual device (Device Manager → Create Device), then press ▶ Run.
+   Confirm the app launches, loads the real site, the back button
+   navigates instead of closing the app, and a subscribe/pack-unlock
+   button opens Chrome Custom Tabs rather than staying in-app.
+6. **Create a release keystore**: `keytool -genkey -v -keystore
+   mannerism-release.keystore -alias mannerism -keyalg RSA -keysize 2048
+   -validity 10000`. Store the keystore file and its passwords somewhere
+   safe outside this repo (a password manager, not a commit) — losing it
+   means you can never update the app under the same listing again.
+   `android/.gitignore` already excludes `*.keystore`/`*.jks`/
+   `key.properties`.
+7. **Build a signed release**: in Android Studio, Build → Generate Signed
+   App Bundle, pointing at the keystore from step 6. Produces the `.aab`
+   file Play Console needs (not an `.apk` — Play Store requires App
+   Bundles for new apps).
+8. **Set up the Google Play Console listing**: create the app, fill in
+   the store listing (description, screenshots — take these from the
+   emulator or a real device), and upload the `.aab` from step 7.
+9. **Complete the Data Safety form** in Play Console — this is where you
+   formally declare what data the app collects (see `/privacy`'s TODOs,
+   which are written to line up with this form: email for auth, gameplay
+   data in Supabase, billing handled by Stripe). The declared answers and
+   `/privacy`'s actual wording need to match.
+10. **Complete the content rating questionnaire** in Play Console —
+    answer honestly based on the Flirty & Cheeky pack's actual content
+    (see the code comment on the pack definition in
+    `supabase/schema.sql`). This will likely land the app at a Teen
+    rating rather than Everyone; that's expected, not a problem to
+    engineer around.
+11. **Have `/privacy` and `/terms` reviewed** before submitting — both are
+    structural starting points with explicit TODOs, not final legal
+    copy.
+
 ## Notes / things to revisit before a real launch
 
 - Timer is purely visual and cosmetic (every phone counts down locally from
@@ -218,3 +319,9 @@ Supabase Site URL/Redirect URLs to match — nothing else changes.
 - No rate limiting on `create_custom_pattern` / anonymous sign-ups yet —
   fine for a party game among friends, worth adding (e.g. Supabase's
   built-in captcha/rate-limit settings) before a public launch.
+- `@capacitor/assets` (a devDependency, used only to generate the Android
+  icon/splash images — never shipped in the app itself) pulls in an old,
+  vulnerable nested copy of `@capacitor/cli` for its unused iOS/Xcode asset
+  path. `npm audit` will flag this; it's dev-tooling-only exposure, not
+  worth `npm audit fix --force`'s breaking-change risk for a tool you run
+  once per logo change.

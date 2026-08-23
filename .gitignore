@@ -33,3 +33,11 @@ next-env.d.ts
 
 # stray Git Bash crash dumps
 *.stackdump
+
+# Android release signing — belt-and-suspenders on top of android/.gitignore,
+# since this is exactly the kind of file that must never end up in git
+# history (unlike most secrets, a leaked signing key can't be rotated —
+# Play Store apps are tied to it for life).
+*.jks
+*.keystore
+key.properties

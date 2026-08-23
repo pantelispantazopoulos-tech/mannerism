@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "./Button";
 import { TextField } from "./TextField";
 import { startCheckout } from "@/lib/stripe/checkout";
+import { useIsNativePlatform } from "@/lib/capacitor/useIsNativePlatform";
 
 interface Props {
   // What the player was trying to do — shown as the headline reason.
@@ -37,6 +38,11 @@ export function UpgradePrompt({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [linkSent, setLinkSent] = useState(false);
+  // Checkout always opens the system browser on native (see
+  // src/lib/stripe/checkout.ts) rather than the app's own WebView, so the
+  // button copy says so explicitly instead of quoting a price the player
+  // won't see until they land there.
+  const isNative = useIsNativePlatform();
 
   async function handleLinkEmail(e: React.FormEvent) {
     e.preventDefault();
@@ -92,7 +98,7 @@ export function UpgradePrompt({
         )
       ) : (
         <Button className="mt-4" onClick={handleUpgrade} disabled={busy} variant="primary">
-          {busy ? "Starting checkout…" : ctaLabel}
+          {busy ? "Starting checkout…" : isNative ? "Continue on mannerism.app" : ctaLabel}
         </Button>
       )}
 
