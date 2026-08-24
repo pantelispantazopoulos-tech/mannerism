@@ -277,13 +277,14 @@ Console account, and decisions only you can make.
    Confirm the app launches, loads the real site, the back button
    navigates instead of closing the app, and a subscribe/pack-unlock
    button opens Chrome Custom Tabs rather than staying in-app.
-6. **Create a release keystore**: `keytool -genkey -v -keystore
-   mannerism-release.keystore -alias mannerism -keyalg RSA -keysize 2048
-   -validity 10000`. Store the keystore file and its passwords somewhere
-   safe outside this repo (a password manager, not a commit) — losing it
-   means you can never update the app under the same listing again.
-   `android/.gitignore` already excludes `*.keystore`/`*.jks`/
-   `key.properties`.
+6. **Create a release keystore**: run `scripts/generate-release-keystore.sh`
+   yourself, interactively (it prompts for the store/key passwords rather
+   than taking them as arguments, so only you ever see them — see the
+   script's own comments for why). Store the keystore file and its
+   passwords somewhere safe outside this repo (a password manager, not a
+   commit) — losing either means you can never update the app under the
+   same listing again. `android/.gitignore` already excludes
+   `*.keystore`/`*.jks`/`key.properties`.
 7. **Build a signed release**: in Android Studio, Build → Generate Signed
    App Bundle, pointing at the keystore from step 6. Produces the `.aab`
    file Play Console needs (not an `.apk` — Play Store requires App
