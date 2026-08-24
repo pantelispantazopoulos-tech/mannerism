@@ -1,0 +1,8 @@
+# Copy this file to key.properties (in this same android/ folder) and fill
+# in the real values after running scripts/generate-release-keystore.sh
+# yourself. key.properties is gitignored — never commit the real one, it
+# holds real passwords.
+storePassword=REPLACE_ME
+keyPassword=REPLACE_ME
+keyAlias=mannerism
+storeFile=mannerism-release.keystore
