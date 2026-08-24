@@ -285,10 +285,16 @@ Console account, and decisions only you can make.
    commit) — losing either means you can never update the app under the
    same listing again. `android/.gitignore` already excludes
    `*.keystore`/`*.jks`/`key.properties`.
-7. **Build a signed release**: in Android Studio, Build → Generate Signed
-   App Bundle, pointing at the keystore from step 6. Produces the `.aab`
-   file Play Console needs (not an `.apk` — Play Store requires App
-   Bundles for new apps).
+7. **Build a signed release**: copy `android/key.properties.example` to
+   `android/key.properties` and fill in the real values from step 6 —
+   `android/app/build.gradle` picks this up automatically and signs any
+   release build with it, verified working this session (built and
+   installed a real signed release APK end-to-end). Then either run
+   `./gradlew bundleRelease` from `android/` (produces the `.aab` Play
+   Console needs — not an `.apk`, Play Store requires App Bundles for new
+   apps), or use Android Studio's Build → Generate Signed App Bundle if
+   you'd rather use the GUI. `key.properties` is gitignored — same
+   passwords-never-committed reasoning as the keystore itself.
 8. **Set up the Google Play Console listing**: create the app, fill in
    the store listing (description, screenshots — take these from the
    emulator or a real device), and upload the `.aab` from step 7.
