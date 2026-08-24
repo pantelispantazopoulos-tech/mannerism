@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { dispatchBackPress } from "@/lib/capacitor/backHandlerStack";
 
 // Wires the Android hardware back button to the app's own navigation
 // history instead of the platform default (which, unhandled inside a
@@ -24,11 +25,14 @@ export function CapacitorBackButton() {
 
       const { App } = await import("@capacitor/app");
       const handle = await App.addListener("backButton", ({ canGoBack }) => {
-        // canGoBack reflects the WebView's own history stack — since every
-        // screen change in this app (room join/create, /premium, /room/
-        // [code]/patterns) is a real Next.js navigation, this retraces the
-        // same path the player took forward, landing back on e.g. the join
-        // screen rather than leaving WebView state half-torn-down.
+        // Some "screens" (the landing page's create/join forms) are local
+        // component state, not a real Next.js route — canGoBack/router.back()
+        // have nothing to undo for those, so give registered handlers (see
+        // useBackHandler) first refusal before falling back to real
+        // history. canGoBack reflects the WebView's own history stack for
+        // everything that *is* a real navigation (room join/create redirect,
+        // /premium, /room/[code]/patterns).
+        if (dispatchBackPress()) return;
         if (canGoBack) {
           router.back();
         } else {

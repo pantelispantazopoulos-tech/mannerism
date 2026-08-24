@@ -9,6 +9,7 @@ import { RoomCodeInput } from "@/components/RoomCodeInput";
 import { Spinner } from "@/components/Spinner";
 import { Logo } from "@/components/Logo";
 import { useAnonymousAuth } from "@/lib/supabase/useAnonymousAuth";
+import { useBackHandler } from "@/lib/capacitor/useBackHandler";
 import { createRoom, joinRoom } from "@/lib/game/roomApi";
 import { localeNames, supportedLocales } from "@/lib/i18n/translations";
 import type { Locale } from "@/lib/supabase/types";
@@ -25,6 +26,19 @@ export default function HomePage() {
   const [language, setLanguage] = useState<Locale>("en");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // The create/join forms are local `mode` state, not a real route change
+  // — there's no browser-history entry for CapacitorBackButton's default
+  // router.back()/exitApp() logic to fall back on, so register directly:
+  // step back to the landing view first, only let the hardware back
+  // button close the app once we're already there.
+  useBackHandler(() => {
+    if (mode !== "landing") {
+      setMode("landing");
+      return true;
+    }
+    return false;
+  });
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
