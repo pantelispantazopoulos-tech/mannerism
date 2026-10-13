@@ -1,0 +1,46 @@
+name: Supabase keepalive
+
+# Free-tier Supabase projects auto-pause after ~7 days without real database
+# activity, and an anon-key REST read doesn't count (confirmed 2026-09-12 —
+# the project paused again on 2026-10-13 despite reads every 4 days). So this
+# does an actual write: it upserts the single heartbeat row in keepalive_ping
+# (supabase/migrations/0008_keepalive_ping.sql) using the service_role key.
+#
+# Runs every 3 days so one missed run still leaves margin before the ~7-day
+# cutoff. A failed run fails the job, which makes GitHub email the repo owner.
+
+on:
+  schedule:
+    - cron: "17 6 */3 * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Write heartbeat row
+        env:
+          SUPABASE_URL: https://mqotiwzawvznwfrtrgei.supabase.co
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          if [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then
+            echo "::error::SUPABASE_SERVICE_ROLE_KEY secret is not set"
+            exit 1
+          fi
+
+          status=$(curl -sS -o response.txt -w "%{http_code}" --max-time 30 \
+            --retry 3 --retry-delay 10 --retry-all-errors \
+            -X POST "$SUPABASE_URL/rest/v1/keepalive_ping" \
+            -H "apikey: $SUPABASE_SERVICE_ROLE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
+            -H "Content-Type: application/json" \
+            -H "Prefer: resolution=merge-duplicates,return=minimal" \
+            -d "{\"id\": 1, \"pinged_at\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}") || status=000
+
+          cat response.txt 2>/dev/null; echo
+          if [ "${status:0:1}" != "2" ]; then
+            echo "::error::Keepalive write failed with HTTP $status — the project may be paused: https://supabase.com/dashboard/project/mqotiwzawvznwfrtrgei"
+            exit 1
+          fi
+          echo "Heartbeat written (HTTP $status)"
